@@ -37,5 +37,5 @@ jobs:
           ls ./spec-backup
           cat ./backupUS.yaml
         env:
-          HTTP_PROXY: http://localhost:8080
-          HTTPS_PROXY: http://localhost:8080
+          HTTP_PROXY: http://localhost:8888
+          HTTPS_PROXY: http://localhost:8888
