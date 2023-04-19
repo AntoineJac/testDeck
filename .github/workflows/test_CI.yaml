@@ -1,0 +1,44 @@
+name: CI
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches:
+     - master
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  
+env:
+  HTTP_PROXY: https://9b9a-77-207-182-82.ngrok-free.app
+  HTTPS_PROXY: https://9b9a-77-207-182-82.ngrok-free.app
+  
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  deploy-customer-api:
+    name: Deploy Customer API to Gateway and Dev Portal
+    runs-on: [self-hosted, macOS]
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v3       
+      #Installing the inso, deck and portal cli
+      - name: Install NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - name: Install Deck  
+        run: |
+          brew tap kong/deck
+          brew install deck
+      - name: Install inso
+        run: brew install inso
+
+      #Backup old config for EU
+      - name: Backup Insomnia Spec EU
+        run: |
+          mkdir -p ./spec-backup
+          deck dump --konnect-token "${{ secrets.KONNECT_TOKEN }}" --konnect-addr "https://eu.api.konghq.com" -o backupUS.yaml
+          cp ./backupUS.yaml ./spec-backup
+          ls ./spec-backup
+          cat ./backupUS.yaml
